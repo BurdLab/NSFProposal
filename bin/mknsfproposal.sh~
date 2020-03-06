@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# This script sets up the directory structure for an NSF proposal.
+#
+# Usage: ~/bin/mknsfproposal.sh NSFPROPOSALNAME
+#
+# This will create the required directory structure and template files
+# in the current directory
+
+# Set up variables
+proposal_name="$1"
+
+stdbibdir="/Users/adrian/Dropbox/Bibliography/"
+stdbibname="abb"
+bibfiles="$stdbibname,$proposal_name"
+bibdir="Description"
+
+
+# Create the directory structure
+#mkdir -p ${proposal_name}/{BioSketch,Budgets,Compiled,CurrentPending,DataManagement,Description/Figures,Facilities,Literature,OtherDocs,PostdocPlan,Summary}
+
+mkdir ${proposal_name}
+cd ${proposal_name}
+
+cp -r /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/* .
+
+# Create special files (bibliographies) in the required directories
+#cd ${proposal_name}
+cd Description
+touch ${proposal_name}.bib
+cd ../
+
+# Copy across the template files: DO THIS MORE EFFICIENTLY BY COPYING THE TEMPLATE
+# DIRECTORY TREE ONCE IT IS FINALIZED
+
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/BioSketch.tex BioSketch
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/BudgetJustification.tex Budgets
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/CurrentPending.tex CurrentPending
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/DataManagement.tex DataManagement
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/Description.tex Description
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/References.tex Description
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/Facilities.tex Facilities
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/PostdocPlan.tex PostdocPlan
+#cp /Users/adrian/Library/texmf/doc/latex/NSFProposal/Template/Summary.tex Summary
+
+# Amend the template the files 
+cd Description
+cp ${stdbibdir}$stdbibname.bib .
+sed -i '' "s/templatebib/$bibfiles/g" Description.tex
+
+cd ../BioSketch
+relstdbibfile="../Description/$stdbibname"
+relpropbibfile="../Description/$proposal_name"
+relbibfiles="$relstdbibfile,$relpropbibfile"
+sed -i '' "s^templatebib^$relbibfiles^g" Biosketch.tex
+
+cd ../DataManagement
+sed -i '' "s^templatebib^$relbibfiles^g" DataManagement.tex
